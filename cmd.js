@@ -63,8 +63,8 @@ yargs.command({
     describe: "Supprime une note",
     builder: {
         id: {
-            describe: "Message de ma note",
-            demandOption: false, 
+            describe: "Id de ma note",
+            demandOption: true, 
             type: "string"
         }
     },
@@ -73,19 +73,20 @@ yargs.command({
         fs.readFile("data.json", "utf-8", (err, dataStr) => {
 
             let notes = JSON.parse(dataStr);
-
-            console.log(notes);
             
             for (let i = 0;i < notes.length; i++) {
                 if (i+1 == argv.id) {
-                    console.log("J'agis");
                     notes.splice(i, 1);
                 }
                 
-                
+                notes[i].id = `${i+1}`;
             };
 
-            console.log(notes);
+            const notesJSON = JSON.stringify(notes);
+
+            fs.writeFile("data.json", notesJSON, (err) => {
+                (err?console.log(err):console.log("La note a été supprimée"));
+            })
 
         })
 
@@ -93,7 +94,26 @@ yargs.command({
 }).command({
     command: 'read',
     describe: "Affiche le détail d'une note",
-    handler: () => {
+    builder: {
+        id: {
+            describe: "Id de ma note",
+            demandOption: true, 
+            type: "string"
+        }
+    },
+    handler: (argv) => {
         console.log("Voici le détail d'une note");
+
+        fs.readFile("data.json", "utf-8", (err, dataStr) => {
+
+            let notes = JSON.parse(dataStr);
+            
+            for (let i = 0;i < notes.length; i++) {
+                if (i+1 == argv.id) {
+                    console.log(`${notes[i].id}. ${notes[i].title} : ${notes[i].message}`);
+                }
+                
+            };    
+        })
     }
 }).argv;
