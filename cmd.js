@@ -71,18 +71,22 @@ yargs.command({
     handler: (argv) => {
         console.log("Chaud pour supprimer une note");
         fs.readFile("data.json", "utf-8", (err, dataStr) => {
-            
-            const notes = JSON.parse(dataStr);
+
+            let notes = JSON.parse(dataStr);
 
             console.log(notes);
             
-            notes.forEach((function(note) {
-                if (note.id === argv.id) {
-                    notes.splice(note);
+            for (let i = 0;i < notes.length; i++) {
+                if (i+1 == argv.id) {
+                    console.log("J'agis");
+                    notes.splice(i, 1);
                 }
-            });
+                
+                
+            };
 
             console.log(notes);
+
         })
 
     }
